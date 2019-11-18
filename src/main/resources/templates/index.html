@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:HH="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tasks</title>
+</head>
+<body>
+<div th:switch="${tasks}">
+    <h2 th:case="null">No users yet!</h2>
+    <div th:case="*">
+        <h2>Tasks</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Start time</th>
+                <th>End time</th>
+                <th>Name</th>
+                <th>Content</th>
+                <th>Priority</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="t: ${tasks}">
+                <td><span th:text="${#temporals.format(t.getStartTime(),'HH:mm')}"></span></td>
+                <td><span th:text="${#temporals.format(t.getEndTime(),'HH:mm')}"></span></td>
+                <td><span th:text="${t.getName()}"></span></td>
+                <td><span th:text="${t.getContent()}"></span></td>
+                <td><span th:text="${t.getPriority().name()}"></span></td>
+                <td><span th:text="${t.getStatus().name()}"></span></td>
+                <td><a th:href="@{/edit/{id}(id=${t.getId()})}">Edit</a></td>
+                <td><a th:href="@{/delete/{id}(id=${t.getId()})}">Delete</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p><a href="/signup">Add a new task</a></p>
+</div>
+
+<form action="/day" method="post">
+    <h2>Check task for specific day</h2>
+    <input type="date" name = "date" ><br>
+    <input type="submit" value="Click Here">
+</form>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="#" th:action="@{/update/{id}(id=${task.id})}" th:object="${task}" method="post">
+
+    <label for="startime">Start time</label>
+    <input type="datetime-local" th:field="*{startTime}" id="startime" placeholder="Start time" value="2018-06-12T19:30">
+    <!--    <span th:if="${#fields.hasErrors('startime')}" th:errors="*{startTime}"></span>-->
+
+    <label for="endtime">End Time</label>
+    <input type="datetime-local" th:field="*{endTime}" id="endtime" placeholder="End Time"  value="2018-06-12T19:30">
+    <!--    <span th:if="${#fields.hasErrors('endtime')}" th:errors="*{endTime}"></span>-->
+
+    <label for="name">Name</label>
+    <input type="text" th:field="*{name}" id="name" placeholder="Name">
+    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+
+    <label for="content">Content</label>
+    <input type="text" th:field="*{content}" id="content" placeholder="Content">
+    <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+
+    <select name="priority">
+        <option id="priority" th:each="prOpt : ${T(net.usermd.mgrabiec.jee.calendar.model.Priority).values()}"
+                th:field="*{priority}" th:value="${prOpt}" th:text="${prOpt.displayValue}"></option>
+    </select>
+
+    <select name="status">
+        <option id="status" th:each="stOpt : ${T(net.usermd.mgrabiec.jee.calendar.model.Status).values()}"
+                th:field="*{status}" th:value="${stOpt}" th:text="${stOpt.displayValue}"></option>
+    </select>
+
+    <!--    <label for="status">Content</label>-->
+    <!--    <input type="text" th:field="*{status}" id="status" placeholder="Content">-->
+    <!--    <span th:if="${#fields.hasErrors('content')}" th:errors="*{status}"></span>-->
+
+
+
+    <input type="submit" value="Update Task">
+</form>
+</body>
+</html>
