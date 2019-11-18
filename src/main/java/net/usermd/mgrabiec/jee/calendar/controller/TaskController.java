@@ -2,7 +2,6 @@ package net.usermd.mgrabiec.jee.calendar.controller;
 
 import net.usermd.mgrabiec.jee.calendar.model.MyTaskRepo;
 import net.usermd.mgrabiec.jee.calendar.model.Task;
-import net.usermd.mgrabiec.jee.calendar.model.TimeComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,8 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 //@RequestMapping("/task")
@@ -25,9 +24,9 @@ public class TaskController {
         this.taskRepo = taskRepo;
     }
 
-    @GetMapping("/signup")
+    @GetMapping("/add")
     public String showSignUpForm(Task task, Model model){
-        model.addAttribute("localDateTime", LocalDateTime.now());
+        //model.addAttribute("localDateTime", LocalDateTime.now());
         return "add-task";
     }
 
@@ -39,24 +38,26 @@ public class TaskController {
 
         if(task.getStartTime().isBefore(task.getEndTime()))taskRepo.save(task);
         else return "add-task";
-        ArrayList<Task> tasks=(ArrayList<Task>)taskRepo.findAll();
-        tasks.sort(new TimeComparator());
+        List<Task> tasks=taskRepo.findByOrderByStartTime();
         model.addAttribute("tasks", tasks);
         return "index";
     }
 
     @GetMapping
     public String index(Model model) {
-        model.addAttribute("tasks", taskRepo.findAll());
+        model.addAttribute("tasks", taskRepo.findByOrderByStartTime());
         return "index";
     }
 
     @GetMapping("/edit/{id}")
     public String showUpdateForm(@PathVariable("id") long id, Model model) {
-        Task task = taskRepo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid task Id:" + id));
-        System.out.println(id);
-        model.addAttribute("task", task);
+        try {
+            Task task = taskRepo.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid task Id:" + id));
+            model.addAttribute("task", task);
+        }catch(java.lang.IllegalArgumentException e){
+            return "/error";
+        }
         return "update-task";
     }
 
@@ -68,18 +69,27 @@ public class TaskController {
         }
         if(task.getStartTime().isBefore(task.getEndTime()))taskRepo.save(task);
         else return "update-task";
-        ArrayList<Task> tasks=(ArrayList<Task>)taskRepo.findAll();
-        tasks.sort(new TimeComparator());
+        ArrayList<Task> tasks=(ArrayList<Task>)taskRepo.findByOrderByStartTime();
         model.addAttribute("tasks", tasks);
         return "index";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") long id, Model model) {
-        Task task = taskRepo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        taskRepo.delete(task);
-        model.addAttribute("tasks", taskRepo.findAll());
+        try {
+            Task task = taskRepo.findById(id).orElseThrow(() -> {
+                throw new IllegalArgumentException("Invalid task Id:" + id);
+            });
+            taskRepo.delete(task);
+        }catch (java.lang.IllegalArgumentException e) {
+        return "/error";
+        }
+        model.addAttribute("tasks", taskRepo.findByOrderByStartTime());
+        return "index";
+    }
+
+    @GetMapping("/error")
+    public String getErrorPath(){
         return "index";
     }
 }

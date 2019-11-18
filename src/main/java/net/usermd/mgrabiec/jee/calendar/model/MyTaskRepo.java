@@ -12,4 +12,5 @@ public interface MyTaskRepo extends CrudRepository<Task,Long> {
 
     Task removeTaskById(long id);
     List<Task> findAllByStartTimeBetween(LocalDateTime start,LocalDateTime stop);
+    List<Task> findByOrderByStartTime();
 }
