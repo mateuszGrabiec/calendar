@@ -2,10 +2,7 @@ package net.usermd.mgrabiec.jee.calendar.model;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity(name = "task")
@@ -22,6 +19,10 @@ public class Task {
     private String name;
     private Status status;
     private Priority priority;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Task() {
     }
@@ -49,7 +50,11 @@ public class Task {
         return this.name;
     }
 
-//setters
+    public User getUser() {
+        return user;
+    }
+
+    //setters
 
     public boolean setStartTime(LocalDateTime startTime) {
         boolean isSet = false;
@@ -115,6 +120,17 @@ public class Task {
         return true;
     }
 
+    public boolean setUser(User user) {
+        try {
+            this.user = user;
+        } catch (IllegalArgumentException exception) {//
+            return false;
+        }
+        return true;
+    }
+
+
+
     public Task(long id, LocalDateTime startTime, LocalDateTime endTime, String name, String content, Status status, Priority priority) {
         this.id = id;
         this.endTime = endTime;
@@ -132,6 +148,16 @@ public class Task {
         this.content = content;
         this.status = status;
         this.priority = priority;
+    }
+
+    public Task(LocalDateTime startTime, LocalDateTime endTime, String name, String content , Status status, Priority priority, User user) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.content = content;
+        this.name = name;
+        this.status = status;
+        this.priority = priority;
+        this.user = user;
     }
 
     @Override
