@@ -10,9 +10,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    private String username;
+    private String userName;
     private String password;
     private String mail;
+    private boolean enabled;
 
     @OneToMany(fetch = FetchType.EAGER,mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Task> tasks;
@@ -21,13 +22,13 @@ public class User {
     }
 
     public User(String username, String password, String mail) {
-        this.username = username;
+        this.userName = username;
         this.password = password;
         this.mail = mail;
     }
 
     public User(String username, String password, String mail, Set<Task> tasks) {
-        this.username = username;
+        this.userName = username;
         this.password = password;
         this.mail = mail;
         this.tasks = tasks;
@@ -41,12 +42,12 @@ public class User {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String username) {
+        this.userName = username;
     }
 
     public String getPassword() {
@@ -65,6 +66,12 @@ public class User {
         this.mail = mail;
     }
 
+    public boolean getEnabled(){return this.enabled;}
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public Set<Task> getTasks() {
         return tasks;
     }
@@ -77,7 +84,7 @@ public class User {
     public String toString() {
         String result = String.format(
                 "Category[id=%d, name='%s' mail='%s']%n",
-                this.userId, this.username, this.mail);
+                this.userId, this.userName, this.mail);
         if (this.tasks != null) {
             for(Task task : this.tasks) {
                 result += String.format(

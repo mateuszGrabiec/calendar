@@ -1,6 +1,8 @@
 package net.usermd.mgrabiec.jee.calendar;
 
 import net.usermd.mgrabiec.jee.calendar.model.*;
+import net.usermd.mgrabiec.jee.calendar.services.MyTaskRepo;
+import net.usermd.mgrabiec.jee.calendar.services.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -25,7 +27,8 @@ public class Start {
 
     @EventListener(ApplicationReadyEvent.class)
     public void runExample(){
-        User user = new User("Mati","password","example@examle.com");
+        User user = new User("admin","admin","example@examle.com");
+//        user.setEnabled(true);
         Set<Task> tasks = new HashSet<>();
 
         LocalDateTime czas1= LocalDateTime.of(LocalDate.now(),LocalTime.of(0,0));
@@ -48,19 +51,18 @@ public class Start {
         tasks.add(task3);
         user.setTasks(tasks);
 
-        System.out.println(user.getTasks().size());
-
         userRepo.save(user);
 
-//                userRepo.findAll().forEach(u -> {
-//                   u.getTasks().forEach(System.out::println);
-//                });
 
+        //myTaskRepo.findByUserUserNameOrderByStartTime(user.getUserName()).forEach(System.out::println);
 
+                User user1 = new User("user","user","example1@examle.com");
+//        user.setEnabled(true);
+        Set<Task> tasks1 = new HashSet<>();
+        tasks1.add(new Task(czas11,czas5,"zad5","sdadsa",Status.FREE,Priority.LOW,user1));
 
-        for (User u : userRepo.findAll()) {
-            System.out.println(u);
-        }
+        user1.setTasks(tasks1);
+        userRepo.save(user1);
     }
 
 }

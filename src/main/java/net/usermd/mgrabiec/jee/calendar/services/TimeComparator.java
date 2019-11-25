@@ -1,4 +1,6 @@
-package net.usermd.mgrabiec.jee.calendar.model;
+package net.usermd.mgrabiec.jee.calendar.services;
+
+import net.usermd.mgrabiec.jee.calendar.model.Task;
 
 import java.util.Comparator;
 

@@ -8,7 +8,7 @@
 <div th:switch="${tasks}">
     <h2 th:case="null">No tasks yet!</h2>
     <div th:case="*">
-        <h2 th:text="${{ 'Tasks from ' + day}}" ></h2>
+        <h2 th:text="${{ 'Tasks from ' + #temporals.format(day,'dd-MM-yyyy')}}" ></h2>
         <table>
             <thead>
             <tr>
@@ -37,13 +37,18 @@
     <p><a href="/add">Add a new task</a></p>
 </div>
 
-<form action="/adfasds" method="post">
+<form action="/add-task-for-day" method="post">
     <h2>Check task for specific day</h2>
     <label style="display: none;">
-        <input type="day" name = "day" th:value="${day}" >
+        <input id="day" type="date" name = "day" th:value="${day}" >
     </label><br>
     <input type="submit" value="Add task for this date">
 </form>
-
+<script th:inline="javascript">
+    var message = /*[[${day}]]*/ "";
+    console.log(message);
+    console.log(typeof message);
+    document.getElementById("day").value=message;
+</script>
 </body>
 </html>

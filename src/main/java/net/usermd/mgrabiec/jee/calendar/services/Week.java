@@ -1,4 +1,8 @@
-package net.usermd.mgrabiec.jee.calendar.model;
+package net.usermd.mgrabiec.jee.calendar.services;
+
+import net.usermd.mgrabiec.jee.calendar.model.Priority;
+import net.usermd.mgrabiec.jee.calendar.model.Status;
+import net.usermd.mgrabiec.jee.calendar.model.Task;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
