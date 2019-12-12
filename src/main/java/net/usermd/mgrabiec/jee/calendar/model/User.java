@@ -1,11 +1,13 @@
 package net.usermd.mgrabiec.jee.calendar.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name="user")
-public class User {
+@Table(name = "users")
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -15,8 +17,14 @@ public class User {
     private String mail;
     private boolean enabled;
 
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Task> tasks;
+
+    @OneToMany(mappedBy="worker")
+    private List<Manager> workers;
+
+    @OneToOne(mappedBy = "manager")
+    private Manager manager;
 
     public User() {
     }
@@ -66,7 +74,9 @@ public class User {
         this.mail = mail;
     }
 
-    public boolean getEnabled(){return this.enabled;}
+    public boolean getEnabled() {
+        return this.enabled;
+    }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
@@ -80,19 +90,35 @@ public class User {
         this.tasks = tasks;
     }
 
+    public List<Manager> getWorkers() {
+        return this.workers;
+    }
+
     @Override
     public String toString() {
         String result = String.format(
-                "Category[id=%d, name='%s' mail='%s']%n",
+                "User[id=%d, name='%s' mail='%s']%n",
                 this.userId, this.userName, this.mail);
         if (this.tasks != null) {
-            for(Task task : this.tasks) {
+            for (Task task : this.tasks) {
                 result += String.format(
-                        "Book[id=%d, name='%s']%n",
+                        "Task[id=%d, name='%s']%n",
                         task.getId(), task.getName());
             }
         }
 
         return result;
+    }
+
+    public void setWorkers(List<Manager> workers) {
+        this.workers = workers;
+    }
+
+    public Manager getManager() {
+        return this.manager;
+    }
+
+    public void setManager(Manager manager) {
+        this.manager = manager;
     }
 }

@@ -1,6 +1,7 @@
 package net.usermd.mgrabiec.jee.calendar.controller;
 
 import net.usermd.mgrabiec.jee.calendar.model.Task;
+import net.usermd.mgrabiec.jee.calendar.model.User;
 import net.usermd.mgrabiec.jee.calendar.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,7 +47,10 @@ public class TaskController {
 
     @GetMapping
     public String index(Model model, HttpServletRequest request) {
-        model.addAttribute("tasks",taskService.getAllTasks(request));
+        if(taskService.getAllTasks(request).size()>0)
+            model.addAttribute("tasks",taskService.getAllTasks(request));
+        else
+            model.addAttribute("tasks",null);
         return "index";
     }
 
@@ -82,6 +86,16 @@ public class TaskController {
         return "/error";
         }
         model.addAttribute("tasks", taskService.getAllTasks(request));
+        return "index";
+    }
+
+    @GetMapping("/manager")
+    public String addT(Model model, HttpServletRequest request) {
+        ArrayList<User> team= (ArrayList<User>) taskService.getAllUsers(request);
+        if(team.get(0).getTasks().size()>0)
+            model.addAttribute("tasks",team.get(0).getTasks());
+        else
+            model.addAttribute("tasks",null);
         return "index";
     }
 

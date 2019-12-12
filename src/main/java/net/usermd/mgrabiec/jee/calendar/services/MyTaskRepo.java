@@ -14,7 +14,7 @@ import java.util.List;
 public interface MyTaskRepo extends CrudRepository<Task,Long> {
 
     @Modifying
-    @Query("delete from task t where t.id=:id")
+    @Query("delete from tasks t where t.id=:id")
     void deleteById(long id);
     List<Task> findAllByStartTimeBetween(LocalDateTime start,LocalDateTime stop);
     List<Task> findByUserUserNameOrderByStartTime(String userName);

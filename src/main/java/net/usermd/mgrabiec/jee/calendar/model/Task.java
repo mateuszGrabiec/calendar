@@ -5,7 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "task")
+@Entity(name = "tasks")
 public class Task {
 
     @Id
@@ -21,7 +21,7 @@ public class Task {
     private Priority priority;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "users_id")
     private User user;
 
     public Task() {

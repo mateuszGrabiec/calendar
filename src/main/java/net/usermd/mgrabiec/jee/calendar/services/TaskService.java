@@ -1,5 +1,6 @@
 package net.usermd.mgrabiec.jee.calendar.services;
 
+import net.usermd.mgrabiec.jee.calendar.model.Manager;
 import net.usermd.mgrabiec.jee.calendar.model.Task;
 import net.usermd.mgrabiec.jee.calendar.model.User;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,12 @@ import java.util.Optional;
 public class TaskService {
     private UserRepo userRepo;
     private MyTaskRepo taskRepo;
+    private ManagerRepo managerRepo;
 
-    public TaskService(UserRepo userRepo, MyTaskRepo taskRepo){
+    public TaskService(UserRepo userRepo, MyTaskRepo taskRepo,ManagerRepo managerRepo){
         this.taskRepo=taskRepo;
         this.userRepo=userRepo;
+        this.managerRepo=managerRepo;
     }
 
     public List<Task> getAllTasks(HttpServletRequest request){
@@ -45,8 +48,15 @@ public class TaskService {
         Optional<Task> taskOptional=taskRepo.findById(taskId);
         task = taskOptional.orElse(null);
         if (user!=null && task!=null) {
-            if (task.getUser().equals(user)) {
+            if (task.getUser().equals(user)){
                 taskRepo.deleteById(taskId);
+            }
+            else {
+                long userId=task.getUser().getUserId();
+                managerRepo.findAllByManager(user).forEach(manager -> {
+                    if(manager.getWorker().getUserId()==userId) taskRepo.deleteById(taskId);
+                        }
+                );
             }
         }
     }
@@ -77,5 +87,15 @@ public class TaskService {
             if(! task.getUser().equals(user)) taskList.remove(task);
         });
         return taskList;
+    }
+
+    public List<User> getAllUsers(HttpServletRequest request) {
+        User user = createUser(request);
+        ArrayList<User> team= new ArrayList<>();
+        ArrayList<Manager> managers= managerRepo.findAllByManager(user);
+        managers.forEach(manager -> {
+            team.add(manager.getWorker());
+        });
+        return team;
     }
 }
