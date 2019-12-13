@@ -91,6 +91,10 @@ public class TaskController {
 
     @GetMapping("/manager")
     public String addT(Model model, HttpServletRequest request) {
+
+        //TODO add main and manager controller
+        //index, users, changig task for specific user
+
         ArrayList<User> team= (ArrayList<User>) taskService.getAllUsers(request);
         if(team.get(0).getTasks().size()>0)
             model.addAttribute("tasks",team.get(0).getTasks());

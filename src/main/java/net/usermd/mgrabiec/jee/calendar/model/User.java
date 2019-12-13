@@ -17,6 +17,8 @@ public class User implements Serializable {
     private String mail;
     private boolean enabled;
 
+    //TODO add regex and e-mail register
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Task> tasks;
 
