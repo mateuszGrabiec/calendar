@@ -83,9 +83,7 @@ public class TaskService {
     public List<Task> findBetween(HttpServletRequest request, LocalDateTime start, LocalDateTime end) {
         User user = createUser(request);
         List<Task> taskList=taskRepo.findAllByStartTimeBetween(start,end);
-        taskList.forEach(task -> {
-            if(! task.getUser().equals(user)) taskList.remove(task);
-        });
+        taskList.removeIf(task -> !task.getUser().equals(user));
         return taskList;
     }
 

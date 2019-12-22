@@ -8,7 +8,7 @@ public enum Priority {
 
     private final String displayValue;
 
-    private Priority(String displayValue) {
+    Priority(String displayValue) {
         this.displayValue = displayValue;
     }
 
