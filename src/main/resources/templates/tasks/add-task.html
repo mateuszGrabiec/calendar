@@ -5,15 +5,15 @@
     <title>Title</title>
 </head>
 <body>
-<form action="#" th:action="@{/update/{id}(id=${task.id})}" th:object="${task}" method="post">
+<form action="#" th:action="@{/tasks/addtask}" th:object="${task}" method="post">
 
     <label for="startime">Start time</label>
     <input type="datetime-local" th:field="*{startTime}" id="startime" placeholder="Start time" value="2018-06-12T19:30">
-    <!--    <span th:if="${#fields.hasErrors('startime')}" th:errors="*{startTime}"></span>-->
+<!--    <span th:if="${#fields.hasErrors('startime')}" th:errors="*{startTime}"></span>-->
 
     <label for="endtime">End Time</label>
     <input type="datetime-local" th:field="*{endTime}" id="endtime" placeholder="End Time"  value="2018-06-12T19:30">
-    <!--    <span th:if="${#fields.hasErrors('endtime')}" th:errors="*{endTime}"></span>-->
+<!--    <span th:if="${#fields.hasErrors('endtime')}" th:errors="*{endTime}"></span>-->
 
     <label for="name">Name</label>
     <input type="text" th:field="*{name}" id="name" placeholder="Name">
@@ -33,13 +33,13 @@
                 th:field="*{status}" th:value="${stOpt}" th:text="${stOpt.displayValue}"></option>
     </select>
 
-    <!--    <label for="status">Content</label>-->
-    <!--    <input type="text" th:field="*{status}" id="status" placeholder="Content">-->
-    <!--    <span th:if="${#fields.hasErrors('content')}" th:errors="*{status}"></span>-->
+<!--    <label for="status">Content</label>-->
+<!--    <input type="text" th:field="*{status}" id="status" placeholder="Content">-->
+<!--    <span th:if="${#fields.hasErrors('content')}" th:errors="*{status}"></span>-->
 
 
 
-    <input type="submit" value="Update Task">
+    <input type="submit" value="Add Task">
 </form>
 </body>
 </html>
