@@ -3,6 +3,9 @@ package net.usermd.mgrabiec.jee.calendar.services;
 import net.usermd.mgrabiec.jee.calendar.model.Manager;
 import net.usermd.mgrabiec.jee.calendar.model.Task;
 import net.usermd.mgrabiec.jee.calendar.model.User;
+import net.usermd.mgrabiec.jee.calendar.repo.ManagerRepo;
+import net.usermd.mgrabiec.jee.calendar.repo.MyTaskRepo;
+import net.usermd.mgrabiec.jee.calendar.repo.UserRepo;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,13 +54,7 @@ public class TaskService {
             if (task.getUser().equals(user)){
                 taskRepo.deleteById(taskId);
             }
-            else {
-                long userId=task.getUser().getUserId();
-                managerRepo.findAllByManager(user).forEach(manager -> {
-                    if(manager.getWorker().getUserId()==userId) taskRepo.deleteById(taskId);
-                        }
-                );
-            }
+            else if(isMyManager(user,task.getUser().getUserId()))taskRepo.deleteById(taskId);
         }
     }
 
@@ -67,11 +64,12 @@ public class TaskService {
         if(foundedTask.isPresent() && user!=null){
             Task task=foundedTask.get();
             if(task.getUser().equals(user)) return task;
-            else return null;
+            else if(isMyManager(user,task.getUser().getUserId())){
+                    return task;
+                }
         }
-        else return null;
+        return null;
     }
-
 
     private User createUser(HttpServletRequest request){
         Principal principal = request.getUserPrincipal();
@@ -95,5 +93,68 @@ public class TaskService {
             team.add(manager.getWorker());
         });
         return team;
+    }
+
+    public boolean deleteFromTeam(HttpServletRequest request, long id) {
+        User user = createUser(request);
+        managerRepo.deleteByWorkerUserIdAndManagerId(user.getUserId(), id);
+        return true;
+    }
+
+    public List<Task> getUserTasks(HttpServletRequest request, long id){
+        User menago=createUser(request);
+        User user=null;
+        List<Task> tasks=null;
+        if(userRepo.findById(id).isPresent()) user=userRepo.findById(id).get();
+        if(user!=null) {
+            if (isMyManager(menago,user.getUserId())) tasks = taskRepo.findByUserUserNameOrderByStartTime(user.getUserName());
+        }
+        return tasks;
+    }
+
+    public void saveTask(Task task, HttpServletRequest request, long id) {
+        User menago = createUser(request);
+        User worker = null;
+        if (userRepo.findById(id).isPresent()) worker = userRepo.findById(id).get();
+        if (worker!=null) {
+            if(isMyManager(menago,id)){
+                task.setUser(worker);
+                taskRepo.save(task);
+            }
+        }
+    }
+
+    private boolean isMyManager(User manager, long userId){
+        List<Manager> managerList = managerRepo.findAllByManager(manager);
+        for (Manager managment : managerList) {
+            if (managment.getWorker().getUserId() == userId) return true;
+        }
+        return false;
+    }
+
+    public List<User> getListOfUser(HttpServletRequest request) {
+        User menago = createUser(request);
+        List<User> newUsers = new ArrayList<>();
+        for (User u: userRepo.findAll()) {
+            if(! isMyManager(menago,u.getUserId()) && u.getUserId()!=menago.getUserId()) newUsers.add(u);
+        }
+        if(newUsers.size()>0) return newUsers;
+        else return null;
+    }
+
+    public void addToTeam(HttpServletRequest request, long id) {
+        User menago=createUser(request);
+        User worker=null;
+        if(userRepo.findById(id).isPresent())worker=userRepo.findById(id).get();
+        if(worker!=null) {
+            if (!isMyManager(menago, id)) {
+                Manager manager = new Manager();
+                manager.setWorker(worker);
+                manager.setManager(menago);
+                managerRepo.save(manager);
+                worker.setManager(manager);
+                userRepo.save(worker);
+            }
+        }
     }
 }

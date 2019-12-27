@@ -2,18 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Add task to Worker</title>
 </head>
 <body>
+<form action="#" th:action="@{/manager/add-task-to-user/{id}(id=${id})}" th:object="${task}" method="post">
 
-<form action="#" th:action="@{today/addtask}" th:object="${task}" method="post">
-
-    <label for="starttime">Start time</label>
-    <input id="starttime" type="datetime-local" th:field="*{startTime}"  placeholder="Start time" >
-<!--        <span th:if="${#fields.hasErrors('startime')}" th:errors="*{startTime}"></span>-->
+    <label for="startime">Start time</label>
+    <input type="datetime-local" th:field="*{startTime}" id="startime" placeholder="Start time" value="2018-06-12T19:30">
+    <!--    <span th:if="${#fields.hasErrors('startime')}" th:errors="*{startTime}"></span>-->
 
     <label for="endtime">End Time</label>
-    <input type="datetime-local" th:field="*{endTime}" id="endtime" placeholder="End Time"  >
+    <input type="datetime-local" th:field="*{endTime}" id="endtime" placeholder="End Time"  value="2018-06-12T19:30">
     <!--    <span th:if="${#fields.hasErrors('endtime')}" th:errors="*{endTime}"></span>-->
 
     <label for="name">Name</label>
@@ -34,17 +33,7 @@
                 th:field="*{status}" th:value="${stOpt}" th:text="${stOpt.displayValue}"></option>
     </select>
 
-    <label name="day" style="display: none;">
-        <input id="day" type="datetime-local" name = "day" th:value="${day}" >
-    </label>
     <input type="submit" value="Add Task">
 </form>
-<script th:inline="javascript">
-    var message = /*[[${day}]]*/ "";
-    console.log(message);
-    console.log(typeof message);
-    document.getElementById("starttime").value=message;
-    //document.getElementById("day").value=message;
-</script>
 </body>
 </html>

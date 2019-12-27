@@ -1,7 +1,6 @@
 package net.usermd.mgrabiec.jee.calendar.controller;
 
 import net.usermd.mgrabiec.jee.calendar.model.Task;
-import net.usermd.mgrabiec.jee.calendar.model.User;
 import net.usermd.mgrabiec.jee.calendar.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/tasks")
@@ -28,7 +25,7 @@ public class TaskController {
     }
 
     @GetMapping("/add")
-    public String showSignUpForm(Task task, Model model){
+    public String addTask(Task task, Model model){
         //model.addAttribute("localDateTime", LocalDateTime.now());
         return "tasks/add-task";
     }
@@ -41,9 +38,7 @@ public class TaskController {
 
         if(task.getStartTime().isBefore(task.getEndTime()))taskService.saveTask(task,request);
         else return "/tasks/add-task";
-        List<Task> tasks=taskService.getAllTasks(request);
-        model.addAttribute("tasks", tasks);
-        return "tasks/index";
+        return "redirect:/tasks";
     }
 
     @GetMapping
@@ -61,7 +56,7 @@ public class TaskController {
             Task task = taskService.findById(id, request);
             if(task!=null)model.addAttribute("task", task);
         }catch(java.lang.IllegalArgumentException e){
-            return "/error";
+            return "redirect:/error";
         }
         return "tasks/update-task";
     }
@@ -73,10 +68,8 @@ public class TaskController {
             return "/tasks/update-task";
         }
         if(task.getStartTime().isBefore(task.getEndTime()))taskService.saveTask(task,request);
-        else return "/main/resources/templates/tasks/update-task.html";
-        ArrayList<Task> tasks=(ArrayList<Task>)taskService.getAllTasks(request);
-        model.addAttribute("tasks", tasks);
-        return "tasks/index";
+        else return "/tasks/update-task";
+        return "redirect:/tasks";
     }
 
     @GetMapping("/delete/{id}")
@@ -86,27 +79,6 @@ public class TaskController {
         }catch (java.lang.IllegalArgumentException e) {
         return "/error";
         }
-        //TODO add redirect
-        model.addAttribute("tasks", taskService.getAllTasks(request));
-        return "tasks/index";
+        return "redirect:/tasks";
     }
-
-    @GetMapping("/manager")
-    public String addT(Model model, HttpServletRequest request) {
-
-        //TODO add main and manager controller
-        //index, users, changig task for specific user
-
-        ArrayList<User> team= (ArrayList<User>) taskService.getAllUsers(request);
-        if(team.get(0).getTasks().size()>0)
-            model.addAttribute("tasks",team.get(0).getTasks());
-        else
-            model.addAttribute("tasks",null);
-        return "tasks/index";
-    }
-
-//    @GetMapping("/error")
-//    public String getErrorPath(){
-//        return "/main/resources/templates/tasks/index.html";
-//    }
 }

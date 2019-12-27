@@ -1,9 +1,9 @@
 package net.usermd.mgrabiec.jee.calendar;
 
 import net.usermd.mgrabiec.jee.calendar.model.*;
-import net.usermd.mgrabiec.jee.calendar.services.ManagerRepo;
-import net.usermd.mgrabiec.jee.calendar.services.MyTaskRepo;
-import net.usermd.mgrabiec.jee.calendar.services.UserRepo;
+import net.usermd.mgrabiec.jee.calendar.repo.ManagerRepo;
+import net.usermd.mgrabiec.jee.calendar.repo.MyTaskRepo;
+import net.usermd.mgrabiec.jee.calendar.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;

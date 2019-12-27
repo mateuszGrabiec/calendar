@@ -1,4 +1,4 @@
-package net.usermd.mgrabiec.jee.calendar.services;
+package net.usermd.mgrabiec.jee.calendar.repo;
 
 import net.usermd.mgrabiec.jee.calendar.model.User;
 import org.springframework.data.repository.CrudRepository;

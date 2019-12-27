@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,32 +44,35 @@ public class DayController {
             tasks.sort(new TimeComparator());
             model.addAttribute("tasks", tasks);
         }else model.addAttribute("tasks", null);
+
         Cookie cookie = new Cookie("date",day.toString());
         response.addCookie(cookie);
+
         model.addAttribute("day", day);
         return "today/index";
     }
 
-    @PostMapping("/add-task-for-day")
-    public String setTodayTask(@RequestParam("day") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day,Task task,Model model,HttpServletRequest request) {
+    @GetMapping("/add-task-for-day")
+    public String setTodayTask(Task task,Model model,HttpServletRequest request) {
+        Cookie[] cookies=request.getCookies();
+        LocalDate day=null;
+        for (Cookie c: cookies){
+            if(c.getName().equals("date"))day=LocalDate.parse(c.getValue());
+        }
+
         if(day!=null){
             LocalDateTime dayTime=LocalDateTime.of(day,LocalTime.MIDNIGHT);
             model.addAttribute("day", dayTime);
+        }
 
-        }
-        Cookie[] cookies=request.getCookies();
-        for (Cookie c: cookies){
-            if(c.getName().equals("date"))System.out.println(c.getValue());
-        }
         return "today/day-add";
     }
 
     @PostMapping("today/addtask")
-    public String addTask(@Valid Task task, BindingResult result, Model model, @RequestParam("day") String day, HttpServletRequest request) {
+    public String addTask(@Valid Task task, BindingResult result, Model model, @RequestParam("day") String day, HttpServletRequest request) {//TODO fix null if val not changed
         if (result.hasErrors()) {
-            return "today/day-add";
+            return "redirect:/add-task-for-day";
         }
-
         if(task.getStartTime().isBefore(task.getEndTime()))taskService.saveTask(task,request);
         else return "today/day-add";
         List<Task> tasks=taskService.getAllTasks(request);

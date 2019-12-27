@@ -8,11 +8,13 @@
 <div th:switch="${tasks}">
     <h2 th:case="null">No tasks yet!</h2>
     <div th:case="*">
-        <h2 th:text="${{ 'Tasks from ' + #temporals.format(day,'dd-MM-yyyy')}}" ></h2>
+        <h2>Tasks</h2>
         <table>
             <thead>
             <tr>
+                <th>Start date</th>
                 <th>Start time</th>
+                <th>End date</th>
                 <th>End time</th>
                 <th>Name</th>
                 <th>Content</th>
@@ -22,20 +24,28 @@
             </thead>
             <tbody>
             <tr th:each="t: ${tasks}">
+                <td><span th:text="${#temporals.format(t.getStartTime(),'dd-MM-yyyy')}"></span></td>
                 <td><span th:text="${#temporals.format(t.getStartTime(),'HH:mm')}"></span></td>
+                <td><span th:text="${#temporals.format(t.getEndTime(),'dd-MM-yyyy')}"></span></td>
                 <td><span th:text="${#temporals.format(t.getEndTime(),'HH:mm')}"></span></td>
                 <td><span th:text="${t.getName()}"></span></td>
                 <td><span th:text="${t.getContent()}"></span></td>
                 <td><span th:text="${t.getPriority().name()}"></span></td>
                 <td><span th:text="${t.getStatus().name()}"></span></td>
-                <td><a th:href="@{/edit/{id}(id=${t.getId()})}">Edit</a></td>
-                <td><a th:href="@{/delete/{id}(id=${t.getId()})}">Delete</a></td>
+                <td><a th:href="@{/tasks/edit/{id}(id=${t.getId()})}">Edit</a></td>
+                <td><a th:href="@{/tasks/delete/{id}(id=${t.getId()})}">Delete</a></td>
             </tr>
             </tbody>
         </table>
     </div>
-    <p><a href="/add">Add a new task</a></p>
+    <p><a href="/tasks/add">Add a new task</a></p>
 </div>
-<p><a href="/add-task-for-day">Add task for this day</a></p>
+
+<form action="/day" method="post">
+    <h2>Check task for specific day</h2>
+    <input type="date" name = "date" ><br>
+    <input type="submit" value="Click Here">
+</form>
+
 </body>
 </html>
